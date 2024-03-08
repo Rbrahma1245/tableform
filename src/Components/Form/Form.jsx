@@ -85,13 +85,13 @@ function Form() {
 
   useEffect(() => {
     fetchData();
-  }, [formFields]);
+  }, [formFields, formList]);
 
- 
   return (
     <div>
       <div className="container">
         <form className="form-container" onSubmit={handleSubmit}>
+          <h3>SIGNUP FORM</h3>
           <div style={{ display: "flex" }}>
             <div className="input-container">
               <InputField
@@ -189,7 +189,11 @@ function Form() {
             />
           </div>
           <div className="btn-box">
-            <Button variant="contained" color="primary" type="submit">
+            <Button
+              variant="contained"
+              color={formFields.id ? "secondary" : "primary"}
+              type="submit"
+            >
               {formFields.id ? "UPDATE" : "SUBMIT"}
             </Button>
           </div>
