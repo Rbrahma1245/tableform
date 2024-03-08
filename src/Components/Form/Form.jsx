@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Form.scss";
 import { v4 as uuidv4 } from "uuid";
 import Display from "../Display/Display";
 import InputField from "./Custom/InputField";
 import Button from "@mui/material/Button";
 import { areAllValuesEmpty } from "../../../Utils/ObjectUtils";
+import axios from "axios";
 
 function Form() {
   const initialFormFields = {
@@ -36,7 +37,7 @@ function Form() {
     });
   }
 
-  function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newErrors = {};
@@ -53,27 +54,40 @@ function Form() {
       });
     } else {
       if (formFields.id) {
-        setFormList((prev) => {
-          return prev.map((data) => {
-            if (data.id === formFields.id) {
-              return formFields;
-            } else {
-              return data;
-            }
-          });
-        });
-        // Clear formFields after edit
+        await axios.put(
+          `http://localhost:3001/formList/${formFields.id}`,
+          formFields
+        );
+
         setFormFields(initialFormFields);
       } else {
-        setFormList((prev) => {
-          let id = uuidv4();
-          return [...prev, { ...formFields, id }];
-        });
+        let id = uuidv4();
+        let obj = { ...formFields, id };
+
+        const { data } = await axios.post(
+          "http://localhost:3001/formList",
+          obj
+        );
+        console.log("Data submitted:", data);
         setFormFields(initialFormFields);
       }
     }
-  }
+  };
 
+  const fetchData = async () => {
+    try {
+      const { data } = await axios.get("http://localhost:3001/formList");
+      setFormList(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [formFields]);
+
+ 
   return (
     <div>
       <div className="container">
