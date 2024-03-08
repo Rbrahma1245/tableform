@@ -4,9 +4,10 @@ import { v4 as uuidv4 } from "uuid";
 import Display from "../Display/Display";
 import InputField from "./Custom/InputField";
 import Button from "@mui/material/Button";
+import { areAllValuesEmpty } from "../../../Utils/ObjectUtils";
 
 function Form() {
-  const initialFormFieldsState = {
+  const initialFormFields = {
     firstName: "",
     lastName: "",
     phoneNo: "",
@@ -18,14 +19,13 @@ function Form() {
     id: "",
   };
 
-  let [formFields, setFormFields] = useState(initialFormFieldsState);
+  let [formFields, setFormFields] = useState(initialFormFields);
   let [formList, setFormList] = useState([]);
-  const [errors, setErrors] = useState({});
+  let [errors, setErrors] = useState({});
 
   function handleChange(e) {
     let { name, value } = e.target;
 
-    console.log(name, value);
     setFormFields((prev) => {
       return { ...prev, [name]: value };
     });
@@ -39,23 +39,11 @@ function Form() {
   function handleSubmit(e) {
     e.preventDefault();
 
-    let { firstName, lastName, email, phoneNo, street, city, state, pinCode } =
-      formFields;
-
     const newErrors = {};
 
-    if (
-      !firstName ||
-      !lastName ||
-      !email ||
-      !phoneNo ||
-      !street ||
-      !city ||
-      !state ||
-      !pinCode
-    ) {
+    if (areAllValuesEmpty(formFields)) {
       Object.keys(formFields).forEach((fieldName) => {
-        if (formFields[fieldName].trim() === "") {
+        if (formFields[fieldName] === "") {
           newErrors[fieldName] = `Please fill the required details`;
         }
         if (Object.keys(newErrors).length > 0) {
@@ -65,11 +53,9 @@ function Form() {
       });
     } else {
       if (formFields.id) {
-        console.log("Update", formList);
         setFormList((prev) => {
           return prev.map((data) => {
             if (data.id === formFields.id) {
-              // Update the edited entry
               return formFields;
             } else {
               return data;
@@ -77,19 +63,17 @@ function Form() {
           });
         });
         // Clear formFields after edit
-        setFormFields(initialFormFieldsState);
+        setFormFields(initialFormFields);
       } else {
         setFormList((prev) => {
           let id = uuidv4();
           return [...prev, { ...formFields, id }];
         });
-        setFormFields(initialFormFieldsState);
+        setFormFields(initialFormFields);
       }
     }
   }
 
-  console.log(errors);
-  console.log(formList);
   return (
     <div>
       <div className="container">
