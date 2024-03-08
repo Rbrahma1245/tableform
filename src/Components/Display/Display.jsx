@@ -2,7 +2,7 @@ import { isObjectEmpty } from "../../../Utils/ObjectUtils";
 import ReactTable from "react-table-v6";
 import "react-table-v6/react-table.css";
 
-function Display({ formList }) {
+function Display({ formList, setFormFields }) {
   const columns = [
     {
       Header: "First Name",
@@ -42,6 +42,11 @@ function Display({ formList }) {
     },
   ];
 
+  const handleRowClick = (row) => {
+    setFormFields(row.original);
+    console.log(row.original);
+  };
+
   return (
     <div style={{ height: "50vh", textAlign: "center", marginTop: 50 }}>
       {isObjectEmpty(formList) ? (
@@ -52,6 +57,9 @@ function Display({ formList }) {
           columns={columns}
           defaultPageSize={10}
           minRows={5}
+          getTrProps={(state, rowInfo) => ({
+            onClick: () => handleRowClick(rowInfo),
+          })}
         />
       )}
     </div>

@@ -6,7 +6,7 @@ import InputField from "./Custom/InputField";
 import Button from "@mui/material/Button";
 
 function Form() {
-  let [formFields, setFormFields] = useState({
+  const initialFormFieldsState = {
     firstName: "",
     lastName: "",
     phoneNo: "",
@@ -16,7 +16,9 @@ function Form() {
     state: "",
     pinCode: "",
     id: "",
-  });
+  };
+
+  let [formFields, setFormFields] = useState(initialFormFieldsState);
   let [formList, setFormList] = useState([]);
   const [errors, setErrors] = useState({});
 
@@ -62,10 +64,27 @@ function Form() {
         }
       });
     } else {
-      setFormList((prev) => {
-        let id = uuidv4();
-        return [...prev, { ...formFields, id }];
-      });
+      if (formFields.id) {
+        console.log("Update", formList);
+        setFormList((prev) => {
+          return prev.map((data) => {
+            if (data.id === formFields.id) {
+              // Update the edited entry
+              return formFields;
+            } else {
+              return data;
+            }
+          });
+        });
+        // Clear formFields after edit
+        setFormFields(initialFormFieldsState);
+      } else {
+        setFormList((prev) => {
+          let id = uuidv4();
+          return [...prev, { ...formFields, id }];
+        });
+        setFormFields(initialFormFieldsState);
+      }
     }
   }
 
@@ -173,13 +192,13 @@ function Form() {
           </div>
           <div className="btn-box">
             <Button variant="contained" color="primary" type="submit">
-              SUBMIT
+              {formFields.id ? "UPDATE" : "SUBMIT"}
             </Button>
           </div>
         </form>
       </div>
 
-      <Display formList={formList} />
+      <Display formList={formList} setFormFields={setFormFields} />
     </div>
   );
 }
