@@ -1,0 +1,40 @@
+@import "../styles/variables";
+@import "../styles/extends";
+@import "../styles/mixin";
+
+.container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+
+  margin: 30px;
+}
+.form-container {
+  @extend %flex-column;
+  background: White;
+  width: 70%;
+  padding: 2%;
+  border-radius: 8px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.input-container {
+  @extend %flex-column;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.btn-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0px 30px;
+
+  button {
+    width: 50%;
+    height: 40px;
+  }
+}
